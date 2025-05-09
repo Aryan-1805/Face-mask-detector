@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Mask Detection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #a1c4fd, #c2e9fb);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            color: #2c3e50;
+        }
+
+        #video-container {
+            position: relative;
+            border: 8px solid #fff;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            overflow: hidden;
+            background: #000;
+        }
+
+        #video-stream {
+            display: block;
+            max-width: 100%;
+            border-radius: 15px;
+        }
+
+        #controls {
+            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #toggle-button {
+            padding: 12px 25px;
+            font-size: 1rem;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #toggle-button:hover {
+            background-color: #2980b9;
+        }
+
+        #result-text {
+            margin-top: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        footer {
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Face Mask Detection</h1>
+    <div id="video-container">
+        <img id="video-stream" src="{{ url_for('video') }}" alt="Video Stream">
+    </div>
+    <div id="controls">
+        <button id="toggle-button">Start / Stop Detection</button>
+        <div id="result-text">Detection status will appear here</div>
+    </div>
+    <footer>
+        Made with ❤️ by Aryan and Team
+    </footer>
+
+    <script>
+        const toggleButton = document.getElementById('toggle-button');
+        const resultText = document.getElementById('result-text');
+
+        let isDetectionOn = false;
+
+        toggleButton.addEventListener('click', async () => {
+            const response = await fetch('/toggle', { method: 'POST' });
+            const data = await response.json();
+            
+            isDetectionOn = data.status === 'on';
+            resultText.textContent = isDetectionOn ? 'Detection is running...' : 'Detection paused.';
+        });
+
+        // Optionally, you can set up periodic fetching for the latest label from the server
+        setInterval(async () => {
+            const response = await fetch('/latest_label');
+            const data = await response.json();
+            resultText.textContent = `Latest Label: ${data.label}`;
+        }, 1000); // Fetch every second
+    </script>
+</body>
+</html>
