@@ -1,60 +1,107 @@
-Face Mask Detection System
-This project implements a face mask detection system using deep learning techniques, OpenCV, and Flask. It identifies whether a person is wearing a face mask in real-time through webcam feed or video files.
 
-Project Structure
+# 😷 Face Mask Detection System
 
-train_mask_detector.py: Script to train the face mask detector model using TensorFlow and Keras.
-detect_mask_video.py: Script to perform face mask detection in real-time from a webcam feed or video.
-app.py: Flask application to serve the face mask detection model via a web interface.
-mask_detector.keras: Trained Keras model file.
-mask_detector.model: Trained model file (alternative format).
-requirements.txt: List of required libraries and dependencies.
-plot.png: Graphical representation of training loss and accuracy.
-Installation
+A real-time face mask detection system built using **Deep Learning**, **OpenCV**, and **Flask**. This project identifies whether individuals are wearing face masks via webcam or video input, making it ideal for public safety and monitoring applications.
 
-Clone the repository:
-git clone https://github.com/yourusername/face-mask-detection.git
-cd face-mask-detection
-Install the required dependencies:
-pip install -r requirements.txt
-Training the Model
+---
 
-To train the face mask detector model, use the train_mask_detector.py script:
+## 📁 Project Structure
 
+| File / Folder            | Description                                                           |
+| ------------------------ | --------------------------------------------------------------------- |
+| `train_mask_detector.py` | Script to train the mask detection model using TensorFlow and Keras.  |
+| `detect_mask_video.py`   | Real-time face mask detection using webcam or video feed.             |
+| `app.py`                 | Flask web app that runs the detection system via a browser interface. |
+| `mask_detector.keras`    | Trained Keras model file.                                             |
+| `mask_detector.model`    | Trained model in an alternate format.                                 |
+| `requirements.txt`       | List of dependencies and required Python packages.                    |
+| `plot.png`               | Visual representation of model loss and accuracy during training.     |
+
+---
+
+## 🛠 Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/yourusername/face-mask-detection.git
+   cd face-mask-detection
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+---
+
+## 🧠 Training the Model
+
+To train the model from scratch using your own dataset:
+
+```bash
 python train_mask_detector.py --dataset dataset
-The script will save the trained model and a plot of the training loss and accuracy.
+```
 
-Running the Detection
+* The script will output a trained model and save a plot of the training performance (`plot.png`).
 
-Using the Flask App:
-Start the Flask server:
+---
 
+## 🧪 Running the Detection
+
+### 🔹 Using the Flask Web Interface
+
+```bash
 python app.py
-Visit http://localhost:5000/ in your browser to use the web interface for mask detection.
+```
 
-Using Webcam or Video Feed:
-To perform real-time mask detection:
+* Navigate to `http://localhost:5000/` in your browser.
+* Upload images and get real-time detection results in the UI.
 
+### 🔹 Using Webcam or Video Stream
+
+```bash
 python detect_mask_video.py
-This will activate the webcam and display the detection results in real-time.
+```
 
-Results and Accuracy
+* This will launch your webcam and start real-time mask detection on the video feed.
 
-The plot (plot.png) shows the training loss and accuracy, indicating the model's performance over epochs. The model achieves high accuracy, with loss decreasing significantly after the initial epochs.
+---
 
-Technologies Used
+## 📊 Results & Accuracy
 
-Python: For building and training the model.
-TensorFlow/Keras: Deep learning model training.
-OpenCV: Real-time video processing.
-Flask: Web server for model deployment.
-Matplotlib: Plotting training metrics.
-Future Improvements
+The model demonstrates high accuracy, as visualized in `plot.png`.
 
-Integrating mask detection on recorded video files.
-Enhancing UI with a responsive design.
-Implementing multi-person detection.
-Extending the model to detect incorrect mask usage.
-Acknowledgements
+* **Training Loss** drops consistently.
+* **Accuracy** increases significantly after the initial few epochs.
 
-This project utilizes TensorFlow, OpenCV, and Flask for model training, real-time detection, and deployment.
+---
+
+## 🧰 Technologies Used
+
+* **Python** – Core programming language
+* **TensorFlow / Keras** – Deep learning model training
+* **OpenCV** – Image and video processing
+* **Flask** – Lightweight web framework for deployment
+* **Matplotlib** – Visualization of training performance
+
+---
+
+## 🚀 Future Enhancements
+
+* 🎥 Extend detection to uploaded or recorded video files
+* 🖥 Improve the frontend with a more dynamic and responsive UI
+* 👥 Add support for detecting **multiple faces** at once
+* 🩺 Classify **improper mask usage** (e.g., mask below nose)
+
+---
+
+## 🙏 Acknowledgements
+
+Special thanks to the open-source libraries and contributors behind:
+
+* [TensorFlow](https://www.tensorflow.org/)
+* [OpenCV](https://opencv.org/)
+* [Flask](https://flask.palletsprojects.com/)
+
