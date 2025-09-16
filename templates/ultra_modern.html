@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Face Mask Detection - Ultra Modern</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary-color: #8b5cf6;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --dark-bg: #0f172a;
+            --dark-surface: #1e293b;
+            --light-bg: #f8fafc;
+            --light-surface: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-light: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            color: #f1f5f9;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease-out 0.2s both;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--light-surface);
+            border: none;
+            border-radius: 50px;
+            padding: 12px;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            animation: fadeInRight 1s ease-out 0.4s both;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .dark-mode .theme-toggle {
+            background: var(--dark-surface);
+            color: #f1f5f9;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 40px;
+            flex: 1;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        /* Video Section */
+        .video-section {
+            background: var(--light-surface);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode .video-section {
+            background: var(--dark-surface);
+        }
+
+        .video-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .video-container {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #000;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 30px;
+        }
+
+        #video-stream {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--danger-color);
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.active {
+            background: var(--success-color);
+        }
+
+        .fps-counter {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color), #059669);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color), #dc2626);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: var(--light-surface);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .dark-mode .btn-secondary {
+            background: var(--dark-surface);
+            color: #f1f5f9;
+            border-color: #475569;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: var(--light-surface);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode .stats-section {
+            background: var(--dark-surface);
+        }
+
+        .stats-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--success-color), var(--warning-color));
+        }
+
+        .stats-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: var(--light-bg);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .dark-mode .stat-card {
+            background: var(--dark-bg);
+            border-color: #475569;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .faces-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .face-item {
+            background: var(--light-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--danger-color);
+            transition: all 0.3s ease;
+            animation: slideInRight 0.5s ease-out;
+        }
+
+        .dark-mode .face-item {
+            background: var(--dark-bg);
+        }
+
+        .face-item.mask {
+            border-left-color: var(--success-color);
+        }
+
+        .face-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .face-label {
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .face-confidence {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--border-color);
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--danger-color), var(--warning-color), var(--success-color));
+            transition: width 0.3s ease;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, var(--success-color), #059669);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, var(--danger-color), #dc2626);
+        }
+
+        .notification.warning {
+            background: linear-gradient(135deg, var(--warning-color), #d97706);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--text-secondary);
+            animation: fadeInUp 1s ease-out 0.8s both;
+            font-weight: 500;
+        }
+
+        .footer p {
+            margin-bottom: 10px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .footer-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-weight: 500;
+        }
+
+        .footer-link:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        .dark-mode ::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--light-surface);
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            animation: slideInDown 0.3s ease;
+        }
+
+        .dark-mode .modal-content {
+            background: var(--dark-surface);
+            color: #f1f5f9;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .dark-mode .modal-body {
+            color: #f1f5f9;
+        }
+
+        .settings-section {
+            margin-bottom: 30px;
+        }
+
+        .settings-section h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 8px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode .settings-section h3 {
+            color: #f1f5f9;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--light-bg);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode .setting-item {
+            background: var(--dark-bg);
+        }
+
+        .setting-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .setting-item label {
+            font-weight: 600;
+            color: var(--text-primary);
+            flex: 1;
+            font-size: 0.95rem;
+        }
+
+        .dark-mode .setting-item label {
+            color: #f1f5f9;
+        }
+
+        .setting-item input[type="range"] {
+            width: 150px;
+            margin: 0 15px;
+        }
+
+        .dark-mode .setting-item input[type="range"] {
+            accent-color: #60a5fa;
+        }
+
+        .setting-item input[type="number"] {
+            width: 80px;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--light-surface);
+            color: var(--text-primary);
+        }
+
+        .dark-mode .setting-item input[type="number"] {
+            background: var(--dark-surface);
+            border-color: #475569;
+            color: #f1f5f9;
+        }
+
+        .setting-item select {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--light-surface);
+            color: var(--text-primary);
+            min-width: 150px;
+        }
+
+        .dark-mode .setting-item select {
+            background: var(--dark-surface);
+            border-color: #475569;
+            color: #f1f5f9;
+        }
+
+        .setting-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary-color);
+        }
+
+        .dark-mode .setting-item input[type="checkbox"] {
+            accent-color: #60a5fa;
+        }
+
+        .setting-item span {
+            font-weight: 600;
+            color: var(--primary-color);
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .dark-mode .setting-item span {
+            color: #60a5fa;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            padding: 25px 30px;
+            border-top: 1px solid var(--border-color);
+            background: var(--light-bg);
+            border-radius: 0 0 20px 20px;
+        }
+
+        .dark-mode .modal-footer {
+            background: var(--dark-bg);
+            color: #f1f5f9;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+            
+            .setting-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .setting-item input[type="range"] {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-shield-virus"></i> AI Face Mask Detection</h1>
+            <p>Advanced real-time face mask detection powered by machine learning</p>
+            <button class="theme-toggle" id="theme-toggle">
+                <i class="fas fa-moon" id="theme-icon"></i>
+            </button>
+        </div>
+
+        <div class="main-content">
+            <div class="video-section">
+                <div class="video-container">
+                    <div class="video-overlay">
+                        <div class="status-indicator">
+                            <div class="status-dot" id="status-dot"></div>
+                            <span id="status-text">Offline</span>
+                        </div>
+                        <div class="fps-counter" id="fps-counter">FPS: 0.0</div>
+                    </div>
+                    <img id="video-stream" src="{{ url_for('video') }}" alt="Video Stream">
+                </div>
+                
+                <div class="controls">
+                    <button id="toggle-button" class="btn btn-primary">
+                        <i class="fas fa-play" id="toggle-icon"></i>
+                        <span id="toggle-text">Start Detection</span>
+                    </button>
+                    <button id="refresh-button" class="btn btn-secondary">
+                        <i class="fas fa-refresh"></i>
+                        Refresh
+                    </button>
+                    <button id="settings-button" class="btn btn-secondary">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </button>
+                    <button id="fullscreen-button" class="btn btn-secondary">
+                        <i class="fas fa-expand"></i>
+                        Fullscreen
+                    </button>
+                </div>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Processing...</p>
+                </div>
+            </div>
+
+            <div class="stats-section">
+                <div class="stats-title">
+                    <i class="fas fa-chart-line"></i>
+                    Live Statistics
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="fps-value">0.0</div>
+                        <div class="stat-label">FPS</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="faces-count">0</div>
+                        <div class="stat-label">Faces</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="masks-count">0</div>
+                        <div class="stat-label">Masks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="accuracy-value">0%</div>
+                        <div class="stat-label">Accuracy</div>
+                    </div>
+                </div>
+
+                <div class="faces-list" id="faces-list">
+                    <div style="text-align: center; color: var(--text-secondary); padding: 40px 20px; font-weight: 500;">
+                        <i class="fas fa-user-slash" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.6;"></i>
+                        <p>No faces detected</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Made with <i class="fas fa-heart" style="color: #ef4444;"></i> by Aryan and Team</p>
+            <p>Powered by TensorFlow, OpenCV, and Flask</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">Documentation</a>
+                <a href="#" class="footer-link">GitHub</a>
+                <a href="#" class="footer-link">Support</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-cog"></i> Settings</h2>
+                <button class="close-btn" id="close-settings">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h3>Detection Settings</h3>
+                    <div class="setting-item">
+                        <label for="confidence-threshold">Confidence Threshold</label>
+                        <input type="range" id="confidence-threshold" min="0.1" max="1.0" step="0.1" value="0.5">
+                        <span id="confidence-value">0.5</span>
+                    </div>
+                    <div class="setting-item">
+                        <label for="max-faces">Max Faces</label>
+                        <input type="number" id="max-faces" min="1" max="20" value="10">
+                    </div>
+                    <div class="setting-item">
+                        <label for="detection-interval">Detection Interval (ms)</label>
+                        <input type="number" id="detection-interval" min="100" max="5000" value="1000">
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Display Settings</h3>
+                    <div class="setting-item">
+                        <label for="show-confidence">Show Confidence Scores</label>
+                        <input type="checkbox" id="show-confidence" checked>
+                    </div>
+                    <div class="setting-item">
+                        <label for="show-fps">Show FPS Counter</label>
+                        <input type="checkbox" id="show-fps" checked>
+                    </div>
+                    <div class="setting-item">
+                        <label for="show-bounding-boxes">Show Bounding Boxes</label>
+                        <input type="checkbox" id="show-bounding-boxes" checked>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Performance Settings</h3>
+                    <div class="setting-item">
+                        <label for="frame-skip">Frame Skip</label>
+                        <input type="range" id="frame-skip" min="1" max="5" value="1">
+                        <span id="frame-skip-value">1</span>
+                    </div>
+                    <div class="setting-item">
+                        <label for="video-quality">Video Quality</label>
+                        <select id="video-quality">
+                            <option value="high">High (1080p)</option>
+                            <option value="medium" selected>Medium (720p)</option>
+                            <option value="low">Low (480p)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Notifications</h3>
+                    <div class="setting-item">
+                        <label for="enable-notifications">Enable Notifications</label>
+                        <input type="checkbox" id="enable-notifications" checked>
+                    </div>
+                    <div class="setting-item">
+                        <label for="notification-sound">Notification Sound</label>
+                        <input type="checkbox" id="notification-sound">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="reset-settings">Reset to Default</button>
+                <button class="btn btn-primary" id="save-settings">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class UltraModernFaceMaskApp {
+            constructor() {
+                this.isDetectionOn = false;
+                this.isDarkMode = false;
+                this.updateInterval = null;
+                this.notificationTimeout = null;
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.startStatusUpdates();
+                this.loadTheme();
+                this.setupAnimations();
+            }
+
+            bindEvents() {
+                // Toggle detection
+                document.getElementById('toggle-button').addEventListener('click', () => this.toggleDetection());
+                
+                // Refresh video
+                document.getElementById('refresh-button').addEventListener('click', () => this.refreshVideo());
+                
+                // Settings
+                document.getElementById('settings-button').addEventListener('click', () => this.showSettings());
+                
+                // Fullscreen
+                document.getElementById('fullscreen-button').addEventListener('click', () => this.toggleFullscreen());
+                
+                // Theme toggle
+                document.getElementById('theme-toggle').addEventListener('click', () => this.toggleTheme());
+                
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => this.handleKeyboard(e));
+            }
+
+            async toggleDetection() {
+                const button = document.getElementById('toggle-button');
+                const icon = document.getElementById('toggle-icon');
+                const text = document.getElementById('toggle-text');
+                const loading = document.getElementById('loading');
+                
+                try {
+                    loading.style.display = 'block';
+                    button.disabled = true;
+
+                    const response = await fetch('/toggle', { method: 'POST' });
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        this.isDetectionOn = data.status === 'on';
+                        this.updateToggleButton();
+                        this.showNotification('success', `Detection ${data.status}`);
+                    } else {
+                        this.showNotification('error', data.error || 'Failed to toggle detection');
+                    }
+                } catch (error) {
+                    this.showNotification('error', 'Network error: ' + error.message);
+                } finally {
+                    loading.style.display = 'none';
+                    button.disabled = false;
+                }
+            }
+
+            updateToggleButton() {
+                const button = document.getElementById('toggle-button');
+                const icon = document.getElementById('toggle-icon');
+                const text = document.getElementById('toggle-text');
+                
+                if (this.isDetectionOn) {
+                    button.className = 'btn btn-danger';
+                    icon.className = 'fas fa-stop';
+                    text.textContent = 'Stop Detection';
+                } else {
+                    button.className = 'btn btn-primary';
+                    icon.className = 'fas fa-play';
+                    text.textContent = 'Start Detection';
+                }
+            }
+
+            async refreshVideo() {
+                const video = document.getElementById('video-stream');
+                const loading = document.getElementById('loading');
+                
+                loading.style.display = 'block';
+                
+                // Force refresh the video stream
+                const timestamp = new Date().getTime();
+                video.src = `{{ url_for('video') }}?t=${timestamp}`;
+                
+                setTimeout(() => {
+                    loading.style.display = 'none';
+                }, 2000);
+            }
+
+            showSettings() {
+                const modal = document.getElementById('settings-modal');
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+
+            toggleFullscreen() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            }
+
+            toggleTheme() {
+                this.isDarkMode = !this.isDarkMode;
+                document.body.classList.toggle('dark-mode', this.isDarkMode);
+                
+                const icon = document.getElementById('theme-icon');
+                icon.className = this.isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
+                
+                localStorage.setItem('darkMode', this.isDarkMode);
+                this.showNotification('success', `Switched to ${this.isDarkMode ? 'dark' : 'light'} mode`);
+            }
+
+            loadTheme() {
+                const savedTheme = localStorage.getItem('darkMode');
+                if (savedTheme === 'true') {
+                    this.toggleTheme();
+                }
+            }
+
+            handleKeyboard(e) {
+                switch(e.key) {
+                    case ' ':
+                        e.preventDefault();
+                        this.toggleDetection();
+                        break;
+                    case 'r':
+                        if (e.ctrlKey) {
+                            e.preventDefault();
+                            this.refreshVideo();
+                        }
+                        break;
+                    case 'f':
+                        if (e.ctrlKey) {
+                            e.preventDefault();
+                            this.toggleFullscreen();
+                        }
+                        break;
+                }
+            }
+
+            startStatusUpdates() {
+                this.updateInterval = setInterval(() => this.updateStatus(), 1000);
+            }
+
+            async updateStatus() {
+                try {
+                    const response = await fetch('/status');
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        this.updateUI(data);
+                    } else {
+                        console.error('Status API error:', data);
+                        // Fallback to basic status
+                        this.updateUI({
+                            status: 'Offline',
+                            fps: 0,
+                            faces: [],
+                            detection_on: false
+                        });
+                    }
+                } catch (error) {
+                    console.error('Status update error:', error);
+                    // Fallback to basic status
+                    this.updateUI({
+                        status: 'Offline',
+                        fps: 0,
+                        faces: [],
+                        detection_on: false
+                    });
+                }
+            }
+
+            updateUI(data) {
+                // Update status indicator
+                const statusDot = document.getElementById('status-dot');
+                const statusText = document.getElementById('status-text');
+                
+                if (data.detection_on || (data.status && data.status.includes('Active'))) {
+                    statusDot.classList.add('active');
+                    statusText.textContent = 'Active';
+                } else {
+                    statusDot.classList.remove('active');
+                    statusText.textContent = 'Inactive';
+                }
+
+                // Update FPS
+                const fps = data.fps?.toFixed(1) || '0.0';
+                document.getElementById('fps-value').textContent = fps;
+                document.getElementById('fps-counter').textContent = `FPS: ${fps}`;
+
+                // Update face count
+                const faceCount = data.faces?.length || 0;
+                document.getElementById('faces-count').textContent = faceCount;
+
+                // Update mask count
+                const maskCount = data.faces?.filter(face => face.label === 'Mask').length || 0;
+                document.getElementById('masks-count').textContent = maskCount;
+
+                // Update accuracy
+                const accuracy = faceCount > 0 ? Math.round((maskCount / faceCount) * 100) : 0;
+                document.getElementById('accuracy-value').textContent = `${accuracy}%`;
+
+                // Update faces list
+                this.updateFacesList(data.faces || []);
+            }
+
+            updateFacesList(faces) {
+                const facesList = document.getElementById('faces-list');
+                
+                if (faces.length === 0) {
+                    facesList.innerHTML = `
+                        <div style="text-align: center; color: var(--text-secondary); padding: 40px 20px; font-weight: 500;">
+                            <i class="fas fa-user-slash" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.6;"></i>
+                            <p>No faces detected</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                facesList.innerHTML = faces.map((face, index) => {
+                    const confidence = Math.round(face.confidence * 100);
+                    return `
+                        <div class="face-item ${face.label === 'Mask' ? 'mask' : ''}">
+                            <div class="face-label">
+                                <i class="fas ${face.label === 'Mask' ? 'fa-mask' : 'fa-user-slash'}"></i>
+                                Face ${face.id + 1}: ${face.label}
+                            </div>
+                            <div class="face-confidence">
+                                Confidence: ${confidence}%
+                            </div>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" style="width: ${confidence}%"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            showNotification(type, message) {
+                // Remove existing notification
+                const existing = document.querySelector('.notification');
+                if (existing) {
+                    existing.remove();
+                }
+
+                // Create new notification
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                // Show notification
+                setTimeout(() => notification.classList.add('show'), 100);
+                
+                // Hide notification
+                this.notificationTimeout = setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+
+            setupAnimations() {
+                // Add entrance animations to elements
+                const elements = document.querySelectorAll('.stat-card, .btn, .face-item');
+                elements.forEach((el, index) => {
+                    el.style.animationDelay = `${index * 0.1}s`;
+                });
+            }
+        }
+
+        // Settings Modal JavaScript
+        class SettingsModal {
+            constructor() {
+                this.modal = document.getElementById('settings-modal');
+                this.closeBtn = document.getElementById('close-settings');
+                this.saveBtn = document.getElementById('save-settings');
+                this.resetBtn = document.getElementById('reset-settings');
+                
+                this.bindEvents();
+                this.loadSettings();
+            }
+
+            bindEvents() {
+                this.closeBtn.addEventListener('click', () => this.close());
+                this.saveBtn.addEventListener('click', () => this.saveSettings());
+                this.resetBtn.addEventListener('click', () => this.resetSettings());
+                
+                // Close modal when clicking outside
+                this.modal.addEventListener('click', (e) => {
+                    if (e.target === this.modal) {
+                        this.close();
+                    }
+                });
+
+                // Update range value displays
+                document.getElementById('confidence-threshold').addEventListener('input', (e) => {
+                    document.getElementById('confidence-value').textContent = e.target.value;
+                });
+
+                document.getElementById('frame-skip').addEventListener('input', (e) => {
+                    document.getElementById('frame-skip-value').textContent = e.target.value;
+                });
+            }
+
+            close() {
+                this.modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+
+            loadSettings() {
+                const settings = JSON.parse(localStorage.getItem('faceMaskSettings') || '{}');
+                
+                // Load detection settings
+                document.getElementById('confidence-threshold').value = settings.confidenceThreshold || 0.5;
+                document.getElementById('max-faces').value = settings.maxFaces || 10;
+                document.getElementById('detection-interval').value = settings.detectionInterval || 1000;
+                
+                // Load display settings
+                document.getElementById('show-confidence').checked = settings.showConfidence !== false;
+                document.getElementById('show-fps').checked = settings.showFps !== false;
+                document.getElementById('show-bounding-boxes').checked = settings.showBoundingBoxes !== false;
+                
+                // Load performance settings
+                document.getElementById('frame-skip').value = settings.frameSkip || 1;
+                document.getElementById('video-quality').value = settings.videoQuality || 'medium';
+                
+                // Load notification settings
+                document.getElementById('enable-notifications').checked = settings.enableNotifications !== false;
+                document.getElementById('notification-sound').checked = settings.notificationSound || false;
+                
+                // Update display values
+                document.getElementById('confidence-value').textContent = settings.confidenceThreshold || 0.5;
+                document.getElementById('frame-skip-value').textContent = settings.frameSkip || 1;
+            }
+
+            saveSettings() {
+                const settings = {
+                    confidenceThreshold: parseFloat(document.getElementById('confidence-threshold').value),
+                    maxFaces: parseInt(document.getElementById('max-faces').value),
+                    detectionInterval: parseInt(document.getElementById('detection-interval').value),
+                    showConfidence: document.getElementById('show-confidence').checked,
+                    showFps: document.getElementById('show-fps').checked,
+                    showBoundingBoxes: document.getElementById('show-bounding-boxes').checked,
+                    frameSkip: parseInt(document.getElementById('frame-skip').value),
+                    videoQuality: document.getElementById('video-quality').value,
+                    enableNotifications: document.getElementById('enable-notifications').checked,
+                    notificationSound: document.getElementById('notification-sound').checked
+                };
+
+                localStorage.setItem('faceMaskSettings', JSON.stringify(settings));
+                
+                // Apply settings
+                this.applySettings(settings);
+                
+                // Show success message
+                if (window.app && window.app.showNotification) {
+                    window.app.showNotification('success', 'Settings saved successfully!');
+                }
+                
+                this.close();
+            }
+
+            resetSettings() {
+                if (confirm('Are you sure you want to reset all settings to default?')) {
+                    localStorage.removeItem('faceMaskSettings');
+                    this.loadSettings();
+                    
+                    if (window.app && window.app.showNotification) {
+                        window.app.showNotification('info', 'Settings reset to default');
+                    }
+                }
+            }
+
+            applySettings(settings) {
+                // Apply settings to the application
+                if (window.app) {
+                    // Update detection settings
+                    window.app.confidenceThreshold = settings.confidenceThreshold;
+                    window.app.maxFaces = settings.maxFaces;
+                    window.app.detectionInterval = settings.detectionInterval;
+                    
+                    // Update display settings
+                    window.app.showConfidence = settings.showConfidence;
+                    window.app.showFps = settings.showFps;
+                    window.app.showBoundingBoxes = settings.showBoundingBoxes;
+                    
+                    // Update performance settings
+                    window.app.frameSkip = settings.frameSkip;
+                    window.app.videoQuality = settings.videoQuality;
+                    
+                    // Update notification settings
+                    window.app.enableNotifications = settings.enableNotifications;
+                    window.app.notificationSound = settings.notificationSound;
+                }
+            }
+        }
+
+        // Initialize the app when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.app = new UltraModernFaceMaskApp();
+            window.settingsModal = new SettingsModal();
+        });
+    </script>
+</body>
+</html>
